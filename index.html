@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team Follow-up Dashboard</title>
+<style>
+:root{--bg:#0b0d10;--panel:#12161b;--panel2:#171c22;--line:#29313a;--text:#f4f7fa;--muted:#9aa6b2;--red:#e5484d;--green:#32d583;--amber:#fdb022;--blue:#53b1fd;--bad:#f97066}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;background:radial-gradient(circle at 10% 0%,rgba(229,72,77,.1),transparent 28%),#0b0d10;color:var(--text);min-height:100vh}
+button,input,select,textarea{font:inherit}.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{padding:22px 16px;border-right:1px solid var(--line);background:#0a0d11;position:sticky;top:0;height:100vh}.brand{display:flex;gap:11px;align-items:center;margin-bottom:26px}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--red),#9d174d);font-weight:900}.brand b{display:block}.brand small{color:var(--muted)}
+nav{display:grid;gap:8px}nav button,.btn{border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:11px;padding:10px 13px;cursor:pointer}nav button{text-align:left;background:transparent}.btn.primary{background:var(--red);border-color:var(--red)}
+.note{position:absolute;left:16px;right:16px;bottom:18px;border:1px solid var(--line);background:var(--panel);padding:12px;border-radius:13px;color:var(--muted);font-size:12px;line-height:1.55}
+main{padding:26px;min-width:0}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.top h1{margin:0;font-size:28px}.top p{margin:6px 0 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}.card,.section{background:linear-gradient(180deg,#171c22,#11151a);border:1px solid var(--line);border-radius:16px}.card{padding:16px}.label{color:var(--muted);font-size:11px;font-weight:800}.value{font-size:28px;font-weight:900;margin-top:5px}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--bad)}.info{color:var(--blue)}
+.section{overflow:hidden;margin-bottom:16px}.section-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.section-head h2{font-size:16px;margin:0}.section-head small{color:var(--muted)}
+.filters{display:flex;gap:7px;flex-wrap:wrap}.control{background:#0e1217;color:#fff;border:1px solid var(--line);padding:9px;border-radius:9px}.search{min-width:230px}
+.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:1260px}th,td{padding:12px 10px;border-bottom:1px solid #232a32;text-align:left;vertical-align:top}th{font-size:11px;color:#aeb8c2;background:#101419;position:sticky;top:0}td{font-size:13px}.task{font-weight:800}.sub{font-size:11px;color:var(--muted);margin-top:3px}
+.pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid;font-size:11px;font-weight:800}.p-progress{color:#7cc4ff;border-color:#255b85;background:#102536}.p-done{color:#66e3a4;border-color:#1f6949;background:#10291f}.p-blocked{color:#ff9b91;border-color:#7c302c;background:#321715}.p-pending{color:#ffd36d;border-color:#765615;background:#2d240f}.p-overdue{color:#ff8d8d;border-color:#7f2d35;background:#32171b}
+.prog{display:flex;align-items:center;gap:7px;min-width:140px}.bar{height:7px;background:#252c34;border-radius:8px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),#ff8588)}.plus{color:var(--green);font-weight:800}.minus{color:var(--bad);font-weight:800}.zero{color:var(--muted);font-weight:800}
+.icon{border:1px solid var(--line);background:#161b21;color:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;margin-right:4px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(230px,1fr));gap:10px;padding:14px;overflow:auto}.lane{border:1px solid var(--line);background:#0f1318;border-radius:13px;padding:11px;min-height:180px}.lane-head{display:flex;justify-content:space-between;font-weight:800;margin-bottom:9px}.lane-head span:last-child{color:var(--muted)}.kcard{border:1px solid #2a333c;background:#171c22;border-radius:10px;padding:10px;margin-bottom:8px}.kcard h3{font-size:13px;margin:0 0 7px}.kmeta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:11px}.risk{border-left:4px solid var(--red)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modal-card{background:#12161b;border:1px solid var(--line);border-radius:18px;padding:18px;width:min(760px,100%);max-height:92vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0;font-size:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}.field{display:grid;gap:5px}.full{grid-column:1/-1}label{font-size:12px;color:#b6c0c9;font-weight:700}.field input,.field select,.field textarea{background:#0d1116;color:#fff;border:1px solid var(--line);border-radius:9px;padding:10px}.field textarea{min-height:78px;resize:vertical}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.empty{padding:22px;text-align:center;color:var(--muted)}
+@media(max-width:1050px){.app{grid-template-columns:1fr}aside{display:none}main{padding:16px}.cards{grid-template-columns:repeat(2,1fr)}.cards .card:last-child{grid-column:1/-1}}
+@media(max-width:620px){.top{flex-direction:column}.grid{grid-template-columns:1fr}.full{grid-column:auto}.search{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><div class="logo">FU</div><div><b>Team Follow-up</b><small>Site Progress Control</small></div></div>
+  <nav>
+    <button onclick="go('dashboard')">Dashboard</button>
+    <button onclick="go('tasks')">Task Follow-up</button>
+    <button onclick="go('board')">Status Board</button>
+    <button onclick="exportCSV()">Export CSV</button>
+    <button onclick="exportJSON()">Backup JSON</button>
+    <button onclick="document.getElementById('importFile').click()">Restore JSON</button>
+  </nav>
+  <div class="note"><b>Daily / Weekly Follow-up</b><br>ข้อมูล MVP จะบันทึกใน Browser ของเครื่องนี้อัตโนมัติ</div>
+</aside>
+<main>
+<section id="dashboard">
+<div class="top">
+  <div><h1>Team Follow-up Dashboard</h1><p>Plan vs Actual • Blocker • Next Action • Due Date</p></div>
+  <div class="actions"><button class="btn" onclick="exportCSV()">Export CSV</button><button class="btn primary" onclick="openModal()">+ Add Task</button></div>
+</div>
+<div class="cards">
+  <div class="card"><div class="label">TOTAL TASKS</div><div class="value" id="mTotal">0</div></div>
+  <div class="card"><div class="label">DUE TODAY</div><div class="value info" id="mToday">0</div></div>
+  <div class="card"><div class="label">OVERDUE</div><div class="value bad" id="mOverdue">0</div></div>
+  <div class="card"><div class="label">BLOCKED</div><div class="value warn" id="mBlocked">0</div></div>
+  <div class="card"><div class="label">AVG. PROGRESS</div><div class="value good" id="mAvg">0%</div></div>
+</div>
+</section>
+
+<section class="section" id="tasks">
+<div class="section-head"><div><h2>Task Follow-up Register</h2><small>ตารางหลักสำหรับ Daily / Weekly Meeting</small></div>
+<div class="filters">
+<input id="q" class="control search" placeholder="Search task / owner / area..." oninput="render()">
+<select id="fStatus" class="control" onchange="render()"><option value="">All status</option><option>Not Started</option><option>In Progress</option><option>Blocked</option><option>Done</option></select>
+<select id="fArea" class="control" onchange="render()"><option value="">All area</option></select>
+<select id="fOwner" class="control" onchange="render()"><option value="">All owner</option></select>
+</div></div>
+<div class="table-wrap"><table><thead><tr><th>Task / Scope</th><th>Area</th><th>Owner</th><th>Due</th><th>Plan</th><th>Actual</th><th>Gap</th><th>Status</th><th>Blocker</th><th>Next Action</th><th>Last Update</th><th>Action</th></tr></thead><tbody id="taskBody"></tbody></table></div>
+</section>
+
+<section class="section" id="board">
+<div class="section-head"><div><h2>Status Board</h2><small>Not Started / In Progress / Blocked / Done</small></div></div>
+<div class="board" id="kanban"></div>
+</section>
+</main>
+</div>
+
+<input id="importFile" type="file" accept=".json" hidden onchange="importJSON(event)">
+
+<div class="modal" id="modal"><div class="modal-card">
+<div class="modal-head"><h2 id="modalTitle">Add Task</h2><button class="icon" onclick="closeModal()">✕</button></div>
+<form id="taskForm" onsubmit="saveTask(event)">
+<input type="hidden" id="taskId">
+<div class="grid">
+<div class="field full"><label>Task / Scope *</label><input id="task" required></div>
+<div class="field"><label>Area *</label><input id="area" required placeholder="DH07 / SCR01"></div>
+<div class="field"><label>Owner *</label><input id="owner" required></div>
+<div class="field"><label>System</label><input id="system" placeholder="MEP / ACS / Fire"></div>
+<div class="field"><label>Contractor / Team</label><input id="contractor"></div>
+<div class="field"><label>Start Date</label><input id="start" type="date"></div>
+<div class="field"><label>Due Date *</label><input id="due" type="date" required></div>
+<div class="field"><label>Plan Progress (%)</label><input id="plan" type="number" min="0" max="100" value="0"></div>
+<div class="field"><label>Actual Progress (%)</label><input id="actual" type="number" min="0" max="100" value="0"></div>
+<div class="field"><label>Status</label><select id="status"><option>Not Started</option><option>In Progress</option><option>Blocked</option><option>Done</option></select></div>
+<div class="field"><label>Priority</label><select id="priority"><option>Medium</option><option>High</option><option>Critical</option><option>Low</option></select></div>
+<div class="field full"><label>Blocker / Reason if not on plan</label><textarea id="blocker"></textarea></div>
+<div class="field full"><label>Next Action / Recovery Plan</label><textarea id="nextAction"></textarea></div>
+<div class="field full"><label>Remark</label><textarea id="remark"></textarea></div>
+</div>
+<div class="modal-actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button type="submit" class="btn primary">Save Task</button></div>
+</form>
+</div></div>
+
+<script>
+var KEY="team_followup_tasks_v1";
+var sample=[
+{id:"t1",task:"Ceiling support installation",area:"DH07",owner:"Huawei / Site Team",system:"Architectural",contractor:"WanZhong",start:"2026-09-17",due:"2026-09-20",plan:85,actual:70,status:"In Progress",priority:"High",blocker:"Waiting final clearance above ceiling",nextAction:"Confirm clearance with MEP team and recover 15% tomorrow",remark:"",updated:"19/09/2026 18:30"},
+{id:"t2",task:"Access control rack preparation",area:"SCR02",owner:"ACS Team",system:"Security",contractor:"ACS",start:"2026-09-18",due:"2026-09-19",plan:100,actual:60,status:"Blocked",priority:"Critical",blocker:"Rack space and power source pending confirmation",nextAction:"FOC + FE to confirm rack allocation and power source",remark:"",updated:"19/09/2026 17:15"},
+{id:"t3",task:"RMU access route clearing",area:"IT Power Room",owner:"Project Team",system:"Electrical",contractor:"Main Contractor",start:"2026-09-16",due:"2026-09-21",plan:70,actual:70,status:"In Progress",priority:"High",blocker:"",nextAction:"Maintain clear route and inspect before delivery",remark:"",updated:"19/09/2026 16:45"},
+{id:"t4",task:"IG541 punch list closeout",area:"DH08",owner:"Fire System Team",system:"Fire Protection",contractor:"Ritta",start:"2026-09-15",due:"2026-09-22",plan:55,actual:55,status:"In Progress",priority:"Medium",blocker:"Waiting smoke / VESDA interface confirmation",nextAction:"Joint inspection with fire alarm team",remark:"",updated:"19/09/2026 15:00"}
+];
+function load(){try{var x=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(x))return x}catch(e){}localStorage.setItem(KEY,JSON.stringify(sample));return sample}
+var tasks=load();
+function persist(){localStorage.setItem(KEY,JSON.stringify(tasks))}
+function today(){var d=new Date(),o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10)}
+function esc(s){return String(s||"").replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]})}
+function fmt(x){if(!x)return"-";var p=x.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
+function nowText(){return new Date().toLocaleString("en-GB",{hour12:false})}
+function pill(t){if(t.status!=="Done"&&t.due&&t.due<today())return'<span class="pill p-overdue">Overdue</span>';var m={"In Progress":'<span class="pill p-progress">In Progress</span>',"Done":'<span class="pill p-done">Done</span>',"Blocked":'<span class="pill p-blocked">Blocked</span>',"Not Started":'<span class="pill p-pending">Not Started</span>'};return m[t.status]||esc(t.status)}
+function filtered(){var q=document.getElementById("q").value.toLowerCase().trim(),s=document.getElementById("fStatus").value,a=document.getElementById("fArea").value,o=document.getElementById("fOwner").value;return tasks.filter(function(t){var b=[t.task,t.area,t.owner,t.system,t.contractor,t.blocker,t.nextAction].join(" ").toLowerCase();return(!q||b.indexOf(q)>=0)&&(!s||t.status===s)&&(!a||t.area===a)&&(!o||t.owner===o)})}
+function filters(){var a=document.getElementById("fArea"),o=document.getElementById("fOwner"),av=a.value,ov=o.value,areas=[],owners=[];tasks.forEach(function(t){if(t.area&&areas.indexOf(t.area)<0)areas.push(t.area);if(t.owner&&owners.indexOf(t.owner)<0)owners.push(t.owner)});areas.sort();owners.sort();a.innerHTML='<option value="">All area</option>'+areas.map(function(x){return"<option>"+esc(x)+"</option>"}).join("");o.innerHTML='<option value="">All owner</option>'+owners.map(function(x){return"<option>"+esc(x)+"</option>"}).join("");if(areas.indexOf(av)>=0)a.value=av;if(owners.indexOf(ov)>=0)o.value=ov}
+function metrics(){var d=today(),active=tasks.filter(function(t){return t.status!=="Done"}),avg=tasks.length?Math.round(tasks.reduce(function(a,b){return a+Number(b.actual||0)},0)/tasks.length):0;document.getElementById("mTotal").textContent=tasks.length;document.getElementById("mToday").textContent=active.filter(function(t){return t.due===d}).length;document.getElementById("mOverdue").textContent=active.filter(function(t){return t.due&&t.due<d}).length;document.getElementById("mBlocked").textContent=active.filter(function(t){return t.status==="Blocked"}).length;document.getElementById("mAvg").textContent=avg+"%"}
+function table(){var r=filtered(),b=document.getElementById("taskBody");if(!r.length){b.innerHTML='<tr><td colspan="12" class="empty">No task found</td></tr>';return}b.innerHTML=r.map(function(t){var g=Number(t.actual||0)-Number(t.plan||0),gc=g>0?"plus":g<0?"minus":"zero";return"<tr><td><div class='task'>"+esc(t.task)+"</div><div class='sub'>"+esc(t.system||"-")+" • "+esc(t.contractor||"-")+" • "+esc(t.priority||"Medium")+"</div></td><td>"+esc(t.area)+"</td><td>"+esc(t.owner)+"</td><td>"+fmt(t.due)+"</td><td><div class='prog'><div class='bar'><i style='width:"+Number(t.plan||0)+"%'></i></div>"+Number(t.plan||0)+"%</div></td><td><div class='prog'><div class='bar'><i style='width:"+Number(t.actual||0)+"%'></i></div>"+Number(t.actual||0)+"%</div></td><td><span class='"+gc+"'>"+(g>0?"+":"")+g+"%</span></td><td>"+pill(t)+"</td><td>"+esc(t.blocker||"-")+"</td><td>"+esc(t.nextAction||"-")+"</td><td>"+esc(t.updated||"-")+"</td><td><button class='icon' onclick=\"editTask('"+t.id+"')\">Edit</button><button class='icon' onclick=\"deleteTask('"+t.id+"')\">Delete</button></td></tr>"}).join("")}
+function board(){var ss=["Not Started","In Progress","Blocked","Done"],k=document.getElementById("kanban");k.innerHTML=ss.map(function(s){var x=tasks.filter(function(t){return t.status===s});return"<div class='lane'><div class='lane-head'><span>"+s+"</span><span>"+x.length+"</span></div>"+(x.length?x.map(function(t){return"<div class='kcard "+(s==="Blocked"?"risk":"")+"'><h3>"+esc(t.task)+"</h3><div class='kmeta'><span>"+esc(t.area)+"</span><span>"+Number(t.actual||0)+"%</span></div><div class='kmeta' style='margin-top:6px'><span>"+esc(t.owner)+"</span><span>Due "+fmt(t.due)+"</span></div></div>"}).join(""):"<div class='empty'>No task</div>")+"</div>"}).join("")}
+function render(){filters();metrics();table();board()}
+function openModal(){document.getElementById("taskForm").reset();document.getElementById("taskId").value="";document.getElementById("modalTitle").textContent="Add Task";document.getElementById("plan").value=0;document.getElementById("actual").value=0;document.getElementById("status").value="Not Started";document.getElementById("priority").value="Medium";document.getElementById("modal").classList.add("open")}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+function id(){return"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function saveTask(e){e.preventDefault();var tid=document.getElementById("taskId").value,obj={id:tid||id(),task:document.getElementById("task").value.trim(),area:document.getElementById("area").value.trim(),owner:document.getElementById("owner").value.trim(),system:document.getElementById("system").value.trim(),contractor:document.getElementById("contractor").value.trim(),start:document.getElementById("start").value,due:document.getElementById("due").value,plan:Number(document.getElementById("plan").value||0),actual:Number(document.getElementById("actual").value||0),status:document.getElementById("status").value,priority:document.getElementById("priority").value,blocker:document.getElementById("blocker").value.trim(),nextAction:document.getElementById("nextAction").value.trim(),remark:document.getElementById("remark").value.trim(),updated:nowText()};if(obj.actual>=100)obj.status="Done";var i=tasks.findIndex(function(x){return x.id===obj.id});if(i>=0)tasks[i]=obj;else tasks.unshift(obj);persist();render();closeModal()}
+function editTask(tid){var t=tasks.find(function(x){return x.id===tid});if(!t)return;["task","area","owner","system","contractor","start","due","plan","actual","status","priority","blocker","nextAction","remark"].forEach(function(k){document.getElementById(k).value=t[k]||""});document.getElementById("taskId").value=t.id;document.getElementById("modalTitle").textContent="Update Task";document.getElementById("modal").classList.add("open")}
+function deleteTask(tid){var t=tasks.find(function(x){return x.id===tid});if(!t||!confirm("Delete task: "+t.task+"?"))return;tasks=tasks.filter(function(x){return x.id!==tid});persist();render()}
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},400)}
+function exportCSV(){var h=["Task","Area","Owner","System","Contractor","Start","Due","Plan %","Actual %","Gap %","Status","Priority","Blocker","Next Action","Remark","Last Update"],d=tasks.map(function(t){return[t.task,t.area,t.owner,t.system,t.contractor,t.start,t.due,t.plan,t.actual,Number(t.actual||0)-Number(t.plan||0),t.status,t.priority,t.blocker,t.nextAction,t.remark,t.updated]}),csv=[h].concat(d).map(function(r){return r.map(function(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\n");dl(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),"team-followup.csv")}
+function exportJSON(){dl(new Blob([JSON.stringify(tasks,null,2)],{type:"application/json"}),"team-followup-backup.json")}
+function importJSON(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var x=JSON.parse(r.result);if(!Array.isArray(x))throw 0;tasks=x;persist();render();alert("Restore completed")}catch(err){alert("Cannot restore file")}e.target.value=""};r.readAsText(f)}
+function go(x){document.getElementById(x).scrollIntoView({behavior:"smooth"})}
+document.getElementById("modal").addEventListener("click",function(e){if(e.target.id==="modal")closeModal()});document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});render();
+</script>
+</body>
+</html>
